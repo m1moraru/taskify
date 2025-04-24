@@ -4,19 +4,22 @@ const pool = require('../config/db');
 // Create a task
 const createTask = async (req, res) => {
   try {
-    console.log('req.user:', req.user); // Log the user object
+    console.log('🔐 req.user:', req.user);
 
     const { title, description, priority, status, deadline } = req.body;
 
-    // Validate incoming data
     if (!title || !description || !priority || !status) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Use default user ID for testing if req.user is undefined
-    const userId = req.user?.id || 1; // Replace 1 with a valid user ID from your database
+    //If req.user is missing, return 401
+    if (!req.user || !req.user.id) {
+      console.log('Unauthorized access: No user in session');
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
 
-    console.log('Parsed data:', { title, description, priority, status, deadline, user_id: userId });
+    const userId = req.user.id;
+    console.log('✅ Parsed data:', { title, description, priority, status, deadline, user_id: userId });
 
     const newTask = await taskModel.createTask({
       title,
@@ -27,13 +30,14 @@ const createTask = async (req, res) => {
       user_id: userId,
     });
 
-    console.log('Task successfully created:', newTask);
+    console.log('🎉 Task successfully created:', newTask);
     res.status(201).json(newTask);
   } catch (error) {
-    console.error('Error creating task:', error.message); // Log the error
+    console.error(' Error creating task:', error.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 
 // Get all tasks
