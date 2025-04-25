@@ -8,6 +8,7 @@ const passportConfig = require('./config/passportConfig');
 const pool = require('./config/db');
 const userRoutes = require('./routes/usersRoutes');
 const taskRoutes = require('./routes/taskRoutes');
+const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3001;
@@ -24,13 +25,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'default_secret', 
+  store: new pgSession({
+    pool: pool, 
+    tableName: 'session' 
+  }),
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
-    maxAge: 3600000, // 1 hour
+    httpOnly: true,
+    sameSite: 'None',
+    maxAge: 3600000,
   },
 }));
 
