@@ -1,35 +1,33 @@
-require('dotenv').config({path: '../.env'});
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') }); 
 const { Pool } = require('pg');
 
+// Debugging check
 console.log('Database password:', process.env.DB_PASSWORD);
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 const pool = new Pool({
   user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
   port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
 
-console.log('Database password:', process.env.DB_PASSWORD);
-
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error('Error connecting to database:', err.message);
-  } else {
-    console.log('Connected to the database');
-    release();
-  }
-});
-
-(async () => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    console.log('Database connected:', result.rows[0]);
-  } catch (err) {
-    console.error('Error connecting to database:', err.message);
-  }
-})();
-
+// Only run connection test if this file is executed directly
+if (require.main === module) {
+  (async () => {
+    try {
+      const client = await pool.connect();
+      const result = await client.query('SELECT NOW()');
+      console.log('✅ Database connected:', result.rows[0]);
+      client.release();
+    } catch (err) {
+      console.error('Error connecting to database:', err.message);
+    }
+  })();
+}
 
 module.exports = pool;
