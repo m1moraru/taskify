@@ -13,7 +13,7 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   database: process.env.DB_NAME,
-  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  ssl: { rejectUnauthorized: false }
 });
 
 // Only run connection test if this file is executed directly
