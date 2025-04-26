@@ -11,6 +11,7 @@ const taskRoutes = require('./routes/taskRoutes');
 const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.SERVER_PORT || 3001;
 
 // JSON & URL Encoded parsing
@@ -33,6 +34,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  proxy: true,
   cookie: {
     secure: true,
     httpOnly: true,
