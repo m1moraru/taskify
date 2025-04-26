@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS must come BEFORE session and passport
 app.use(cors({
-  origin: 'https://mariusmoraru.com/taskify',
+  origin: 'https://mariusmoraru.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
