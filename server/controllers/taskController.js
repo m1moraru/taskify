@@ -19,7 +19,7 @@ const createTask = async (req, res) => {
     }
 
     const userId = req.user.id;
-    console.log('✅ Parsed data:', { title, description, priority, status, deadline, user_id: userId });
+    console.log('Parsed data:', { title, description, priority, status, deadline, user_id: userId });
 
     const newTask = await taskModel.createTask({
       title,

@@ -21,6 +21,7 @@ const pool = require('./db');
       status VARCHAR(50) DEFAULT 'To-Do',
       deadline DATE,
       user_id INT NOT NULL,
+      archived BOOLEAN DEFAULT FALSE,
       CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
   `;
@@ -51,4 +52,5 @@ const pool = require('./db');
     console.log('Database connection pool closed.');
   }
 })();
+
 
