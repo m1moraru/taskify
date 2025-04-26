@@ -13,21 +13,22 @@ const pgSession = require('connect-pg-simple')(session);
 const app = express();
 const PORT = process.env.SERVER_PORT || 3001;
 
-// CORS setup
+// JSON & URL Encoded parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// CORS must come BEFORE session and passport
 app.use(cors({
   origin: 'https://mariusmoraru.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
 
-// JSON & URL Encoded parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+// Sessions
 app.use(session({
   store: new pgSession({
-    pool: pool, 
-    tableName: 'session' 
+    pool: pool,
+    tableName: 'session'
   }),
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -40,8 +41,8 @@ app.use(session({
   },
 }));
 
-// Initialize passport
-passportConfig(app); 
+// Passport must come AFTER session
+passportConfig(app);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -64,8 +65,10 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;
+
