@@ -19,10 +19,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS must come BEFORE session and passport
+const allowedOrigins = ['https://mariusmoraru.com'];
+
 app.use(cors({
-  origin: 'https://mariusmoraru.com',
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 
 // Sessions
