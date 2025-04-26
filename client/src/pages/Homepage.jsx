@@ -8,7 +8,7 @@ import Archive from '../components/Archive/Archive';
 import PriorityOverview from '../components/PriorityOverview/PriorityOverview';
 import { AuthContext } from '../context/AuthContext';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = "https://taskify-6sle.onrender.com/api";
 
 function Homepage() {
   const { user, logout } = useContext(AuthContext);
